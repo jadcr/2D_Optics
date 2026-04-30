@@ -1905,6 +1905,7 @@ C:/Qt/2D/ray.h
 C:/Qt/2D/opticalelement.h
 C:/Qt/2D/scene.h
 C:/Qt/2D/sphericalinterface.h
+C:/Qt/2D/conicgraphicsitem.h
 C:/Qt/2D/straightinterface.h
 C:/Qt/2D/coordgrid.cpp
 C:/Qt/2D/detector.cpp
@@ -1914,4 +1915,7 @@ C:/Qt/2D/opticalelement.cpp
 C:/Qt/2D/ray.cpp
 C:/Qt/2D/raytracer.cpp
 C:/Qt/2D/sphericalinterface.cpp
+C:/Qt/2D/conicgraphicsitem.cpp
 C:/Qt/2D/movableitem.cpp
+C:/Qt/2D/conicsurface.h
+C:/Qt/2D/conicsurface.cpp

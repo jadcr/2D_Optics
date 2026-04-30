@@ -137,6 +137,22 @@ build CMakeFiles/2D_Optics.dir/movableitem.cpp.obj: CXX_COMPILER__2D_Optics_unsc
   OBJECT_DIR = CMakeFiles\2D_Optics.dir
   OBJECT_FILE_DIR = CMakeFiles\2D_Optics.dir
 
+build CMakeFiles/2D_Optics.dir/conicsurface.cpp.obj: CXX_COMPILER__2D_Optics_unscanned_Debug C$:/Qt/2D/conicsurface.cpp || cmake_object_order_depends_target_2D_Optics
+  DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -DWINVER=0x0A00 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN32_WINNT=0x0A00 -D_WIN64
+  DEP_FILE = CMakeFiles\2D_Optics.dir\conicsurface.cpp.obj.d
+  FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fansi-escape-codes -fcolor-diagnostics -pthread
+  INCLUDES = -IC:/Qt/2D -IC:/Qt/2D/2D_Optics_autogen/include -isystem C:/Qt/6.10.2/llvm-mingw_64/include/QtWidgets -isystem C:/Qt/6.10.2/llvm-mingw_64/include -isystem C:/Qt/6.10.2/llvm-mingw_64/include/QtCore -isystem C:/Qt/6.10.2/llvm-mingw_64/mkspecs/win32-clang-g++ -isystem C:/Qt/6.10.2/llvm-mingw_64/include/QtGui
+  OBJECT_DIR = CMakeFiles\2D_Optics.dir
+  OBJECT_FILE_DIR = CMakeFiles\2D_Optics.dir
+
+build CMakeFiles/2D_Optics.dir/conicgraphicsitem.cpp.obj: CXX_COMPILER__2D_Optics_unscanned_Debug C$:/Qt/2D/conicgraphicsitem.cpp || cmake_object_order_depends_target_2D_Optics
+  DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -DWINVER=0x0A00 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN32_WINNT=0x0A00 -D_WIN64
+  DEP_FILE = CMakeFiles\2D_Optics.dir\conicgraphicsitem.cpp.obj.d
+  FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fansi-escape-codes -fcolor-diagnostics -pthread
+  INCLUDES = -IC:/Qt/2D -IC:/Qt/2D/2D_Optics_autogen/include -isystem C:/Qt/6.10.2/llvm-mingw_64/include/QtWidgets -isystem C:/Qt/6.10.2/llvm-mingw_64/include -isystem C:/Qt/6.10.2/llvm-mingw_64/include/QtCore -isystem C:/Qt/6.10.2/llvm-mingw_64/mkspecs/win32-clang-g++ -isystem C:/Qt/6.10.2/llvm-mingw_64/include/QtGui
+  OBJECT_DIR = CMakeFiles\2D_Optics.dir
+  OBJECT_FILE_DIR = CMakeFiles\2D_Optics.dir
+
 build CMakeFiles/2D_Optics.dir/graphicsview.cpp.obj: CXX_COMPILER__2D_Optics_unscanned_Debug C$:/Qt/2D/graphicsview.cpp || cmake_object_order_depends_target_2D_Optics
   DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -DWINVER=0x0A00 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN32_WINNT=0x0A00 -D_WIN64
   DEP_FILE = CMakeFiles\2D_Optics.dir\graphicsview.cpp.obj.d
@@ -161,7 +177,7 @@ build CMakeFiles/2D_Optics.dir/coordgrid.cpp.obj: CXX_COMPILER__2D_Optics_unscan
 #############################################
 # Link the executable 2D_Optics.exe
 
-build 2D_Optics.exe: CXX_EXECUTABLE_LINKER__2D_Optics_Debug CMakeFiles/2D_Optics.dir/2D_Optics_autogen/mocs_compilation.cpp.obj CMakeFiles/2D_Optics.dir/main.cpp.obj CMakeFiles/2D_Optics.dir/mainwindow.cpp.obj CMakeFiles/2D_Optics.dir/ray.cpp.obj CMakeFiles/2D_Optics.dir/opticalelement.cpp.obj CMakeFiles/2D_Optics.dir/straightinterface.cpp.obj CMakeFiles/2D_Optics.dir/sphericalinterface.cpp.obj CMakeFiles/2D_Optics.dir/detector.cpp.obj CMakeFiles/2D_Optics.dir/scene.cpp.obj CMakeFiles/2D_Optics.dir/raytracer.cpp.obj CMakeFiles/2D_Optics.dir/movableitem.cpp.obj CMakeFiles/2D_Optics.dir/graphicsview.cpp.obj CMakeFiles/2D_Optics.dir/coordgrid.cpp.obj | C$:/Qt/6.10.2/llvm-mingw_64/lib/libQt6Widgets.a C$:/Qt/6.10.2/llvm-mingw_64/lib/libQt6Gui.a C$:/Qt/6.10.2/llvm-mingw_64/lib/libQt6Core.a || 2D_Optics_autogen 2D_Optics_autogen_timestamp_deps
+build 2D_Optics.exe: CXX_EXECUTABLE_LINKER__2D_Optics_Debug CMakeFiles/2D_Optics.dir/2D_Optics_autogen/mocs_compilation.cpp.obj CMakeFiles/2D_Optics.dir/main.cpp.obj CMakeFiles/2D_Optics.dir/mainwindow.cpp.obj CMakeFiles/2D_Optics.dir/ray.cpp.obj CMakeFiles/2D_Optics.dir/opticalelement.cpp.obj CMakeFiles/2D_Optics.dir/straightinterface.cpp.obj CMakeFiles/2D_Optics.dir/sphericalinterface.cpp.obj CMakeFiles/2D_Optics.dir/detector.cpp.obj CMakeFiles/2D_Optics.dir/scene.cpp.obj CMakeFiles/2D_Optics.dir/raytracer.cpp.obj CMakeFiles/2D_Optics.dir/movableitem.cpp.obj CMakeFiles/2D_Optics.dir/conicsurface.cpp.obj CMakeFiles/2D_Optics.dir/conicgraphicsitem.cpp.obj CMakeFiles/2D_Optics.dir/graphicsview.cpp.obj CMakeFiles/2D_Optics.dir/coordgrid.cpp.obj | C$:/Qt/6.10.2/llvm-mingw_64/lib/libQt6Widgets.a C$:/Qt/6.10.2/llvm-mingw_64/lib/libQt6Gui.a C$:/Qt/6.10.2/llvm-mingw_64/lib/libQt6Core.a || 2D_Optics_autogen 2D_Optics_autogen_timestamp_deps
   FLAGS = -DQT_QML_DEBUG -g
   LINK_LIBRARIES = C:/Qt/6.10.2/llvm-mingw_64/lib/libQt6Widgets.a  C:/Qt/6.10.2/llvm-mingw_64/lib/libQt6Gui.a  C:/Qt/6.10.2/llvm-mingw_64/lib/libQt6Core.a  -pthread  -lmpr  -luserenv  -ld3d11  -ldxgi  -ldxguid  -ld3d12  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\2D_Optics.dir

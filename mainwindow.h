@@ -50,6 +50,7 @@ private slots:
     void on_applyButton_clicked();
     void on_actionRemoveElement_triggered();
     void on_applySource_clicked();
+    void on_actionAddConic_triggered();
 
 
 private:

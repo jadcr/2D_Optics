@@ -23,6 +23,8 @@ set(SOURCES
     scene.cpp
     raytracer.cpp
     movableitem.cpp
+    conicsurface.cpp
+    conicgraphicsitem.cpp
 )
 
 set(HEADERS
@@ -36,6 +38,8 @@ set(HEADERS
     scene.h
     raytracer.h
     movableitem.h
+    conicsurface.h
+    conicgraphicsitem.h
 )
 
 # Если у вас есть файл .ui (mainwindow.ui), добавьте:
@@ -48,6 +52,10 @@ add_executable(2D_Optics ${SOURCES} ${HEADERS}
     coordgrid.cpp
     movableitem.h
     movableitem.cpp
+    conicsurface.h
+    conicsurface.cpp
+    conicgraphicsitem.h
+    conicgraphicsitem.cpp
 ) # ${UIS} если есть
 
 target_link_libraries(2D_Optics Qt6::Widgets)

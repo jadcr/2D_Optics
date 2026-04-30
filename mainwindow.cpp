@@ -7,6 +7,8 @@
 #include "detector.h"
 #include "graphicsview.h"
 #include "coordgrid.h"
+#include "conicsurface.h"
+#include "conicgraphicsitem.h"
 #include <QGraphicsLineItem>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -58,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *actionClearRays = new QAction("Очистить лучи", this);
     QAction *actionClearAll = new QAction("Очистить всё", this);
     QAction *actionRemoveElement = new QAction("Удалить элемент", this);
+    QAction *actionAddConic = new QAction("Добавить коническую поверхность", this);
 
     // Меню
     QMenu *elementsMenu = menuBar()->addMenu("Элементы");
@@ -65,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     elementsMenu->addAction(actionAddSpherical);
     elementsMenu->addAction(actionAddDetector);
     elementsMenu->addAction(actionRemoveElement);
+    elementsMenu->addAction(actionAddConic);
 
     QMenu *traceMenu = menuBar()->addMenu("Трассировка");
     traceMenu->addAction(actionTraceRays);
@@ -117,10 +121,16 @@ MainWindow::MainWindow(QWidget *parent)
     x2Spin->setRange(-1000, 1000);
     QDoubleSpinBox *y2Spin = new QDoubleSpinBox;
     y2Spin->setRange(-1000, 1000);
+
+    QDoubleSpinBox *diameterSpin = new QDoubleSpinBox;
+    diameterSpin->setRange(1, 1000);
+    diameterSpin->setValue(50.0);
+
     geomForm->addRow("X1:", x1Spin);
     geomForm->addRow("Y1:", y1Spin);
     geomForm->addRow("X2:", x2Spin);
     geomForm->addRow("Y2:", y2Spin);
+    geomForm->addRow("Диаметр:", diameterSpin);
     tabWidget->addTab(geomTab, "Геометрия");
 
     // Вкладка "Материалы"
@@ -213,6 +223,7 @@ MainWindow::MainWindow(QWidget *parent)
     n1Spin->setObjectName("n1Spin");
     n2Spin->setObjectName("n2Spin");
     applyButton->setObjectName("applyButton");
+    diameterSpin->setObjectName("diameterSpin");
 
     // Подключение сигналов
     connect(actionAddPlane, &QAction::triggered, this, &MainWindow::on_actionAddPlane_triggered);
@@ -224,6 +235,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(listWidget, &QListWidget::itemClicked, this, &MainWindow::on_listWidget_itemClicked);
     connect(applyButton, &QPushButton::clicked, this, &MainWindow::on_applyButton_clicked);
     connect(actionRemoveElement, &QAction::triggered, this, &MainWindow::on_actionRemoveElement_triggered);
+    connect(actionAddConic, &QAction::triggered, this, &MainWindow::on_actionAddConic_triggered);
     QPushButton *applySourceBtn = findChild<QPushButton*>("applySourceButton");
     if (applySourceBtn) {
         connect(applySourceBtn, &QPushButton::clicked, this, &MainWindow::on_applySource_clicked);
@@ -328,6 +340,11 @@ void MainWindow::addElementToScene(OpticalElement* elem)
                                                     det->p1(), det->p2());
         m_graphicsScene->addItem(item);
     }
+    else if (ConicSurface* conic = dynamic_cast<ConicSurface*>(elem))
+    {
+        ConicGraphicsItem *item = new ConicGraphicsItem(conic, this);
+        m_graphicsScene->addItem(item);
+    }
 }
 
 void MainWindow::updateElementsList()
@@ -358,6 +375,8 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem* item)
     QDoubleSpinBox *n1Spin = findChild<QDoubleSpinBox*>("n1Spin");
     QDoubleSpinBox *n2Spin = findChild<QDoubleSpinBox*>("n2Spin");
 
+    QDoubleSpinBox *diameterSpin = findChild<QDoubleSpinBox*>("diameterSpin");
+
     if (nameEdit) nameEdit->setText(elem->name());
     if (reflectiveCheck) reflectiveCheck->setChecked(elem->isReflective());
     if (n1Spin) n1Spin->setValue(elem->n1());
@@ -384,6 +403,14 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem* item)
         if (x2Spin) { x2Spin->setValue(det->p2().x()); x2Spin->setEnabled(true); }
         if (y2Spin) { y2Spin->setValue(det->p2().y()); y2Spin->setEnabled(true); }
     }
+    else if (ConicSurface* conic = dynamic_cast<ConicSurface*>(elem))   // <--- НОВАЯ ВЕТКА
+    {
+        if (x1Spin) { x1Spin->setValue(conic->vertex().x()); x1Spin->setEnabled(true); }
+        if (y1Spin) { y1Spin->setValue(conic->vertex().y()); y1Spin->setEnabled(true); }
+        if (x2Spin) { x2Spin->setValue(conic->radius()); x2Spin->setEnabled(true); }
+        if (y2Spin) { y2Spin->setValue(conic->k()); y2Spin->setEnabled(true); }
+        if (diameterSpin) { diameterSpin->setValue(conic->diameter()); diameterSpin->setEnabled(true); }
+    }
 }
 
 void MainWindow::on_applyButton_clicked()
@@ -402,6 +429,8 @@ void MainWindow::on_applyButton_clicked()
     QDoubleSpinBox *y2Spin = findChild<QDoubleSpinBox*>("y2Spin");
     QDoubleSpinBox *n1Spin = findChild<QDoubleSpinBox*>("n1Spin");
     QDoubleSpinBox *n2Spin = findChild<QDoubleSpinBox*>("n2Spin");
+
+    QDoubleSpinBox *diameterSpin = findChild<QDoubleSpinBox*>("diameterSpin");
 
     if (nameEdit) elem->setName(nameEdit->text());
     if (reflectiveCheck) elem->setReflective(reflectiveCheck->isChecked());
@@ -428,6 +457,17 @@ void MainWindow::on_applyButton_clicked()
             det->setPoints(QPointF(x1Spin->value(), y1Spin->value()),
                            QPointF(x2Spin->value(), y2Spin->value()));
     }
+    else if (ConicSurface* conic = dynamic_cast<ConicSurface*>(elem))   // <--- НОВАЯ ВЕТКА
+    {
+        if (x1Spin && y1Spin)
+            conic->setVertex(QPointF(x1Spin->value(), y1Spin->value()));
+        if (x2Spin)
+            conic->setRadius(x2Spin->value());
+        if (y2Spin)
+            conic->setK(y2Spin->value());
+        if (diameterSpin)
+            conic->setDiameter(diameterSpin->value());
+    }
 
     // Очистка графики
     clearRayGraphics();
@@ -436,6 +476,9 @@ void MainWindow::on_applyButton_clicked()
 
     // Пересоздать сетку
     setupGrid();
+
+    createSourceItem();
+
 
     // Заново добавить элементы сцены
     for (OpticalElement* e : m_scene->elements())
@@ -493,6 +536,7 @@ void MainWindow::on_actionClearAll_triggered()
     m_coordinateGrid = nullptr;
 
     setupGrid();
+    createSourceItem();
     m_hasLastRayParams = false;
     updateElementsList();
 }
@@ -514,6 +558,7 @@ void MainWindow::on_actionRemoveElement_triggered()
     m_coordinateGrid = nullptr;
 
     setupGrid();
+    createSourceItem();
 
     for (OpticalElement* e : m_scene->elements())
         addElementToScene(e);
@@ -634,6 +679,8 @@ void MainWindow::elementMoved(OpticalElement* element)
         QDoubleSpinBox *y1Spin = findChild<QDoubleSpinBox*>("y1Spin");
         QDoubleSpinBox *x2Spin = findChild<QDoubleSpinBox*>("x2Spin");
         QDoubleSpinBox *y2Spin = findChild<QDoubleSpinBox*>("y2Spin");
+        QDoubleSpinBox *diameterSpin = findChild<QDoubleSpinBox*>("diameterSpin");
+
         if (!x1Spin) return;
 
         if (auto* line = dynamic_cast<StraightInterface*>(element)) {
@@ -652,5 +699,28 @@ void MainWindow::elementMoved(OpticalElement* element)
             x2Spin->setValue(det->p2().x());
             y2Spin->setValue(det->p2().y());
         }
+        else if (ConicSurface* conic = dynamic_cast<ConicSurface*>(element))
+        {
+            x1Spin->setValue(conic->vertex().x());
+            y1Spin->setValue(conic->vertex().y());
+            x2Spin->setValue(conic->radius());
+            y2Spin->setValue(conic->k());
+            if (diameterSpin) {
+                diameterSpin->setValue(conic->diameter());
+                diameterSpin->setEnabled(true);
+            }
+        }
     }
+}
+
+void MainWindow::on_actionAddConic_triggered()
+{
+    // Пример: параболическое зеркало (k = -1) с радиусом 100, диаметром 50
+    ConicSurface *surf = new ConicSurface(QPointF(0, 0), 100.0, -1.0, 50.0,
+                                          1.0, 1.5, false, "Парабола");
+    m_scene->addElement(surf);
+    ConicGraphicsItem *item = new ConicGraphicsItem(surf, this);
+    m_graphicsScene->addItem(item);
+    updateElementsList();
+    regenerateRays();
 }

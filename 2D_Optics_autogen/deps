@@ -6,6 +6,10 @@
 	C:/Qt/2D/CMakeFiles/3.30.5/CMakeRCCompiler.cmake \
 	C:/Qt/2D/CMakeFiles/3.30.5/CMakeSystem.cmake \
 	C:/Qt/2D/CMakeLists.txt \
+	C:/Qt/2D/conicgraphicsitem.cpp \
+	C:/Qt/2D/conicgraphicsitem.h \
+	C:/Qt/2D/conicsurface.cpp \
+	C:/Qt/2D/conicsurface.h \
 	C:/Qt/2D/constants.h \
 	C:/Qt/2D/coordgrid.cpp \
 	C:/Qt/2D/coordgrid.h \

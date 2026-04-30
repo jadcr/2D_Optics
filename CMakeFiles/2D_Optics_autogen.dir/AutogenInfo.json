@@ -325,6 +325,18 @@
 	"DEP_FILE_RULE_NAME" : "2D_Optics_autogen/timestamp",
 	"HEADERS" : 
 	[
+		[
+			"C:/Qt/2D/conicgraphicsitem.h",
+			"Mu",
+			"EWIEGA46WW/moc_conicgraphicsitem.cpp",
+			null
+		],
+		[
+			"C:/Qt/2D/conicsurface.h",
+			"Mu",
+			"EWIEGA46WW/moc_conicsurface.cpp",
+			null
+		],
 		[ "C:/Qt/2D/constants.h", "Mu", "EWIEGA46WW/moc_constants.cpp", null ],
 		[ "C:/Qt/2D/coordgrid.h", "Mu", "EWIEGA46WW/moc_coordgrid.cpp", null ],
 		[ "C:/Qt/2D/detector.h", "Mu", "EWIEGA46WW/moc_detector.cpp", null ],
@@ -432,6 +444,8 @@
 	"SETTINGS_FILE" : "C:/Qt/2D/CMakeFiles/2D_Optics_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[ "C:/Qt/2D/conicgraphicsitem.cpp", "Mu", null ],
+		[ "C:/Qt/2D/conicsurface.cpp", "Mu", null ],
 		[ "C:/Qt/2D/coordgrid.cpp", "Mu", null ],
 		[ "C:/Qt/2D/detector.cpp", "Mu", null ],
 		[ "C:/Qt/2D/graphicsview.cpp", "Mu", null ],
