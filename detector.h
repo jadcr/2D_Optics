@@ -17,14 +17,18 @@ public:
     void process(Ray& ray, const QPointF& point, const QVector2D& normal) const override;
     QString info() const override;
 
+    // Новые методы для диаграммы рассеяния
     const QList<QPointF>& hits() const { return m_hits; }
-    void clearHits();
+    void clearHits() { m_hits.clear(); }
+    double rmsRadius() const;          // среднеквадратичный радиус
+    QPointF centroid() const;          // центроид
+    int hitCount() const { return m_hits.size(); }
 
 private:
     QPointF m_p1, m_p2;
     QVector2D m_direction;
     QVector2D m_normal;
-    mutable QList<QPointF> m_hits; //сохраняем попадания
+    mutable QList<QPointF> m_hits;   // список точек попаданий
 };
 
 #endif // DETECTOR_H

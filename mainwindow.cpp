@@ -9,6 +9,12 @@
 #include "coordgrid.h"
 #include "conicsurface.h"
 #include "conicgraphicsitem.h"
+#include "spotdiagramwidget.h"
+
+#include "histogramwidget.h"
+#include <QDialog>
+#include <QSplitter>
+
 #include <QGraphicsLineItem>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -34,6 +40,10 @@
 #include <QDoubleSpinBox>
 #include <QPushButton>
 #include <QFormLayout>
+
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QMenu>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -62,13 +72,17 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *actionRemoveElement = new QAction("Удалить элемент", this);
     QAction *actionAddConic = new QAction("Добавить коническую поверхность", this);
 
+    QAction *actionSpotDiagram = new QAction("Диаграмма рассеяния", this);
+
     // Меню
-    QMenu *elementsMenu = menuBar()->addMenu("Элементы");
-    elementsMenu->addAction(actionAddPlane);
-    elementsMenu->addAction(actionAddSpherical);
-    elementsMenu->addAction(actionAddDetector);
-    elementsMenu->addAction(actionRemoveElement);
-    elementsMenu->addAction(actionAddConic);
+
+
+    //QMenu *elementsMenu = menuBar()->addMenu("Элементы");
+    //elementsMenu->addAction(actionAddPlane);
+    //elementsMenu->addAction(actionAddSpherical);
+    //elementsMenu->addAction(actionAddDetector);
+    //elementsMenu->addAction(actionRemoveElement);
+    //elementsMenu->addAction(actionAddConic);
 
     QMenu *traceMenu = menuBar()->addMenu("Трассировка");
     traceMenu->addAction(actionTraceRays);
@@ -79,11 +93,15 @@ MainWindow::MainWindow(QWidget *parent)
     QToolBar *toolBar = addToolBar("Инструменты");
     toolBar->addAction(actionAddPlane);
     toolBar->addAction(actionAddSpherical);
+    toolBar->addAction(actionAddConic);
     toolBar->addAction(actionAddDetector);
     toolBar->addSeparator();
     toolBar->addAction(actionTraceRays);
     toolBar->addAction(actionClearRays);
     toolBar->addAction(actionRemoveElement);
+
+    QMenu *analysisMenu = menuBar()->addMenu("Анализ");
+    analysisMenu->addAction(actionSpotDiagram);
 
     // Док-панель списка элементов
     QDockWidget *listDock = new QDockWidget("Список элементов", this);
@@ -236,6 +254,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(applyButton, &QPushButton::clicked, this, &MainWindow::on_applyButton_clicked);
     connect(actionRemoveElement, &QAction::triggered, this, &MainWindow::on_actionRemoveElement_triggered);
     connect(actionAddConic, &QAction::triggered, this, &MainWindow::on_actionAddConic_triggered);
+    connect(actionSpotDiagram, &QAction::triggered, this, &MainWindow::on_actionSpotDiagram_triggered);
     QPushButton *applySourceBtn = findChild<QPushButton*>("applySourceButton");
     if (applySourceBtn) {
         connect(applySourceBtn, &QPushButton::clicked, this, &MainWindow::on_applySource_clicked);
@@ -285,7 +304,7 @@ void MainWindow::on_actionAddSpherical_triggered()
 
 void MainWindow::on_actionAddDetector_triggered()
 {
-    Detector *det = new Detector(QPointF(-60, -30), QPointF(60, -30), "Детектор");
+    Detector *det = new Detector(QPointF(0, -30), QPointF(0, 0), "Детектор");
     m_scene->addElement(det);
     addElementToScene(det);
     regenerateRays();
@@ -321,29 +340,30 @@ void MainWindow::on_actionAddDetector_triggered()
 
 void MainWindow::addElementToScene(OpticalElement* elem)
 {
-    if (StraightInterface* line = dynamic_cast<StraightInterface*>(elem))
-    {
-        MovableLineItem *item = new MovableLineItem(elem, this,
-                                                    line->p1(), line->p2());
-        m_graphicsScene->addItem(item);
+    QGraphicsItem* item = nullptr;
+    if (StraightInterface* line = dynamic_cast<StraightInterface*>(elem)) {
+        MovableLineItem* it = new MovableLineItem(elem, this, line->p1(), line->p2());
+        m_graphicsScene->addItem(it);
+        item = it;
     }
-    else if (SphericalInterface* sphere = dynamic_cast<SphericalInterface*>(elem))
-    {
-        MovableEllipseItem *item = new MovableEllipseItem(sphere, this,
-                                                          sphere->center(),
-                                                          sphere->radius());
-        m_graphicsScene->addItem(item);
+    else if (SphericalInterface* sphere = dynamic_cast<SphericalInterface*>(elem)) {
+        MovableEllipseItem* it = new MovableEllipseItem(sphere, this, sphere->center(), sphere->radius());
+        m_graphicsScene->addItem(it);
+        item = it;
     }
-    else if (Detector* det = dynamic_cast<Detector*>(elem))
-    {
-        MovableLineItem *item = new MovableLineItem(elem, this,
-                                                    det->p1(), det->p2());
-        m_graphicsScene->addItem(item);
+    else if (ConicSurface* conic = dynamic_cast<ConicSurface*>(elem)) {
+        ConicGraphicsItem* it = new ConicGraphicsItem(conic, this);
+        m_graphicsScene->addItem(it);
+        item = it;
     }
-    else if (ConicSurface* conic = dynamic_cast<ConicSurface*>(elem))
-    {
-        ConicGraphicsItem *item = new ConicGraphicsItem(conic, this);
-        m_graphicsScene->addItem(item);
+    else if (Detector* det = dynamic_cast<Detector*>(elem)) {
+        MovableLineItem* it = new MovableLineItem(elem, this, det->p1(), det->p2());
+        m_graphicsScene->addItem(it);
+        item = it;
+    }
+    if (item) {
+        item->setFlag(QGraphicsItem::ItemIsMovable, false); // по умолчанию не двигается
+        registerGraphicsItem(elem, item);
     }
 }
 
@@ -363,6 +383,7 @@ void MainWindow::updateElementsList()
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem* item)
 {
     m_currentElement = (OpticalElement*)item->data(Qt::UserRole).value<void*>();
+    setMovableForSelectedOnly();
     OpticalElement* elem = (OpticalElement*)item->data(Qt::UserRole).value<void*>();
     if (!elem) return;
 
@@ -411,6 +432,7 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem* item)
         if (y2Spin) { y2Spin->setValue(conic->k()); y2Spin->setEnabled(true); }
         if (diameterSpin) { diameterSpin->setValue(conic->diameter()); diameterSpin->setEnabled(true); }
     }
+
 }
 
 void MainWindow::on_applyButton_clicked()
@@ -489,6 +511,8 @@ void MainWindow::on_applyButton_clicked()
 
     // Обновить список элементов
     updateElementsList();
+
+    setMovableForSelectedOnly();
 }
 
 void MainWindow::on_applySource_clicked()
@@ -530,6 +554,7 @@ void MainWindow::on_actionClearRays_triggered()
 void MainWindow::on_actionClearAll_triggered()
 {
     m_scene->clearElements();
+    m_elementToItem.clear();
     m_rayTracer->clearRays();
     clearRayGraphics();
     m_graphicsScene->clear();
@@ -555,6 +580,7 @@ void MainWindow::on_actionRemoveElement_triggered()
     clearRayGraphics();
 \
     m_graphicsScene->clear();
+    m_elementToItem.remove(elem);
     m_coordinateGrid = nullptr;
 
     setupGrid();
@@ -717,10 +743,56 @@ void MainWindow::on_actionAddConic_triggered()
 {
     // Пример: параболическое зеркало (k = -1) с радиусом 100, диаметром 50
     ConicSurface *surf = new ConicSurface(QPointF(0, 0), 100.0, -1.0, 50.0,
-                                          1.0, 1.5, false, "Парабола");
+                                          1.0, 1.5, false, "Коническая поверхность");
     m_scene->addElement(surf);
     ConicGraphicsItem *item = new ConicGraphicsItem(surf, this);
     m_graphicsScene->addItem(item);
     updateElementsList();
     regenerateRays();
+}
+
+void MainWindow::on_actionSpotDiagram_triggered()
+{
+    if (!m_spotDialog) {
+        m_spotDialog = new QDialog(this);
+        m_spotDialog->setWindowTitle("Диаграмма рассеяния и гистограмма");
+        QHBoxLayout *layout = new QHBoxLayout(m_spotDialog);
+        QSplitter *splitter = new QSplitter(Qt::Horizontal);
+        m_spotWidget = new SpotDiagramWidget;   // сохраняем как член класса
+        m_histogramWidget = new HistogramWidget;
+        splitter->addWidget(m_spotWidget);
+        splitter->addWidget(m_histogramWidget);
+        layout->addWidget(splitter);
+        m_spotDialog->resize(900, 600);
+    }
+    updateSpotDiagram();
+    m_spotDialog->show();
+    m_spotDialog->raise();
+}
+
+
+void MainWindow::updateSpotDiagram()
+{
+    if (!m_spotDialog) return;
+    QList<QPointF> allHits;
+    for (OpticalElement* elem : m_scene->elements()) {
+        if (Detector* det = dynamic_cast<Detector*>(elem))
+            allHits.append(det->hits());
+    }
+    if (m_spotWidget) m_spotWidget->setPoints(allHits);
+    if (m_histogramWidget) m_histogramWidget->setPoints(allHits);
+}
+
+void MainWindow::registerGraphicsItem(OpticalElement* elem, QGraphicsItem* item)
+{
+    m_elementToItem[elem] = item;
+}
+
+void MainWindow::setMovableForSelectedOnly()
+{
+    for (auto it = m_elementToItem.begin(); it != m_elementToItem.end(); ++it) {
+        QGraphicsItem* item = it.value();
+        bool movable = (it.key() == m_currentElement);
+        item->setFlag(QGraphicsItem::ItemIsMovable, movable);
+    }
 }

@@ -17,6 +17,8 @@
 	C:/Qt/2D/detector.h \
 	C:/Qt/2D/graphicsview.cpp \
 	C:/Qt/2D/graphicsview.h \
+	C:/Qt/2D/histogramwidget.cpp \
+	C:/Qt/2D/histogramwidget.h \
 	C:/Qt/2D/main.cpp \
 	C:/Qt/2D/mainwindow.cpp \
 	C:/Qt/2D/mainwindow.h \
@@ -32,6 +34,8 @@
 	C:/Qt/2D/scene.h \
 	C:/Qt/2D/sphericalinterface.cpp \
 	C:/Qt/2D/sphericalinterface.h \
+	C:/Qt/2D/spotdiagramwidget.cpp \
+	C:/Qt/2D/spotdiagramwidget.h \
 	C:/Qt/2D/straightinterface.cpp \
 	C:/Qt/2D/straightinterface.h \
 	C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/QList \
@@ -208,6 +212,7 @@
 	C:/Qt/6.10.2/llvm-mingw_64/include/QtWidgets/QGraphicsView \
 	C:/Qt/6.10.2/llvm-mingw_64/include/QtWidgets/QListWidgetItem \
 	C:/Qt/6.10.2/llvm-mingw_64/include/QtWidgets/QMainWindow \
+	C:/Qt/6.10.2/llvm-mingw_64/include/QtWidgets/QWidget \
 	C:/Qt/6.10.2/llvm-mingw_64/include/QtWidgets/qabstractitemdelegate.h \
 	C:/Qt/6.10.2/llvm-mingw_64/include/QtWidgets/qabstractitemview.h \
 	C:/Qt/6.10.2/llvm-mingw_64/include/QtWidgets/qabstractscrollarea.h \

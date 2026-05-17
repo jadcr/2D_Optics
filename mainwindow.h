@@ -1,7 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "histogramwidget.h"
 #include "movableitem.h"
+#include "spotdiagramwidget.h"
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QList>
@@ -52,6 +54,9 @@ private slots:
     void on_applySource_clicked();
     void on_actionAddConic_triggered();
 
+    void on_actionSpotDiagram_triggered();
+    void updateSpotDiagram();
+
 
 private:
     QGraphicsScene *m_graphicsScene;
@@ -60,6 +65,12 @@ private:
     QList<QGraphicsItem*> m_rayGraphicsItems;
     CoordinateGrid *m_coordinateGrid;
     OpticalElement* m_currentElement = nullptr;
+
+    QDialog *m_spotDialog = nullptr;
+
+    QMap<OpticalElement*, QGraphicsItem*> m_elementToItem;
+    void registerGraphicsItem(OpticalElement* elem, QGraphicsItem* item);
+    void setMovableForSelectedOnly();
 
     void updateElementsList();
     void addElementToScene(OpticalElement* elem);
@@ -73,6 +84,9 @@ private:
     MovableSourceItem* m_sourceItem = nullptr;
     void createSourceItem();
     void updateSourceItemGraphics();
+
+    SpotDiagramWidget *m_spotWidget = nullptr;
+    HistogramWidget *m_histogramWidget = nullptr;
 };
 
 #endif // MAINWINDOW_H

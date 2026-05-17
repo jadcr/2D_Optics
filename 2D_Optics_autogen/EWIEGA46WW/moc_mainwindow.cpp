@@ -52,7 +52,9 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "on_applyButton_clicked",
         "on_actionRemoveElement_triggered",
         "on_applySource_clicked",
-        "on_actionAddConic_triggered"
+        "on_actionAddConic_triggered",
+        "on_actionSpotDiagram_triggered",
+        "updateSpotDiagram"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -80,6 +82,10 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_actionAddConic_triggered'
         QtMocHelpers::SlotData<void()>(14, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_actionSpotDiagram_triggered'
+        QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'updateSpotDiagram'
+        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -114,6 +120,8 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 8: _t->on_actionRemoveElement_triggered(); break;
         case 9: _t->on_applySource_clicked(); break;
         case 10: _t->on_actionAddConic_triggered(); break;
+        case 11: _t->on_actionSpotDiagram_triggered(); break;
+        case 12: _t->updateSpotDiagram(); break;
         default: ;
         }
     }
@@ -138,14 +146,14 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 11)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 11;
+        _id -= 13;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 11)
+        if (_id < 13)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 11;
+        _id -= 13;
     }
     return _id;
 }

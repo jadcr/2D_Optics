@@ -25,6 +25,9 @@ set(SOURCES
     movableitem.cpp
     conicsurface.cpp
     conicgraphicsitem.cpp
+    spotdiagramwidget.cpp
+    histogramwidget.cpp
+    spotdiagramwidget.cpp
 )
 
 set(HEADERS
@@ -40,6 +43,9 @@ set(HEADERS
     movableitem.h
     conicsurface.h
     conicgraphicsitem.h
+    spotdiagramwidget.h
+    histogramwidget.h
+    spotdiagramwidget.h
 )
 
 # Если у вас есть файл .ui (mainwindow.ui), добавьте:
@@ -56,6 +62,12 @@ add_executable(2D_Optics ${SOURCES} ${HEADERS}
     conicsurface.cpp
     conicgraphicsitem.h
     conicgraphicsitem.cpp
+    spotdiagramwidget.h
+    spotdiagramwidget.cpp
+    histogramwidget.h
+    histogramwidget.cpp
+
+
 ) # ${UIS} если есть
 
 target_link_libraries(2D_Optics Qt6::Widgets)

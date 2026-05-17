@@ -18,7 +18,7 @@ QRectF ConicGraphicsItem::boundingRect() const
 {
     double R = qAbs(m_surface->radius());
     double D = m_surface->diameter();
-    double maxDim = qMax(R, D / 2.0) + 10.0;
+    double maxDim = qMax(R, D / 2) + 200.0;
     return QRectF(-maxDim, -maxDim, 2.0 * maxDim, 2.0 * maxDim);
 }
 

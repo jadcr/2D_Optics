@@ -346,6 +346,12 @@
 			"EWIEGA46WW/moc_graphicsview.cpp",
 			null
 		],
+		[
+			"C:/Qt/2D/histogramwidget.h",
+			"Mu",
+			"EWIEGA46WW/moc_histogramwidget.cpp",
+			null
+		],
 		[ "C:/Qt/2D/mainwindow.h", "Mu", "EWIEGA46WW/moc_mainwindow.cpp", null ],
 		[
 			"C:/Qt/2D/movableitem.h",
@@ -366,6 +372,12 @@
 			"C:/Qt/2D/sphericalinterface.h",
 			"Mu",
 			"EWIEGA46WW/moc_sphericalinterface.cpp",
+			null
+		],
+		[
+			"C:/Qt/2D/spotdiagramwidget.h",
+			"Mu",
+			"EWIEGA46WW/moc_spotdiagramwidget.cpp",
 			null
 		],
 		[
@@ -449,6 +461,7 @@
 		[ "C:/Qt/2D/coordgrid.cpp", "Mu", null ],
 		[ "C:/Qt/2D/detector.cpp", "Mu", null ],
 		[ "C:/Qt/2D/graphicsview.cpp", "Mu", null ],
+		[ "C:/Qt/2D/histogramwidget.cpp", "Mu", null ],
 		[ "C:/Qt/2D/main.cpp", "Mu", null ],
 		[ "C:/Qt/2D/mainwindow.cpp", "Mu", null ],
 		[ "C:/Qt/2D/movableitem.cpp", "Mu", null ],
@@ -457,6 +470,7 @@
 		[ "C:/Qt/2D/raytracer.cpp", "Mu", null ],
 		[ "C:/Qt/2D/scene.cpp", "Mu", null ],
 		[ "C:/Qt/2D/sphericalinterface.cpp", "Mu", null ],
+		[ "C:/Qt/2D/spotdiagramwidget.cpp", "Mu", null ],
 		[ "C:/Qt/2D/straightinterface.cpp", "Mu", null ]
 	],
 	"USE_BETTER_GRAPH" : true,

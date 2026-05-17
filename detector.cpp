@@ -1,7 +1,9 @@
 #include "detector.h"
 #include <QtMath>
 #include <QLineF>
+#include <cmath>
 #include "constants.h"
+
 
 Detector::Detector(const QPointF& p1, const QPointF& p2, const QString& name)
     : OpticalElement(name), m_p1(p1), m_p2(p2)
@@ -20,6 +22,7 @@ void Detector::setPoints(const QPointF& p1, const QPointF& p2)
     m_direction = vec.normalized();
     m_normal = QVector2D(-m_direction.y(), m_direction.x()).normalized();
 }
+
 
 bool Detector::intersect(const Ray& ray, double& t, QPointF& point, QVector2D& normal) const
 {
@@ -45,19 +48,17 @@ bool Detector::intersect(const Ray& ray, double& t, QPointF& point, QVector2D& n
 
     t = t_intersect;
     point = p;
-    if (QVector2D::dotProduct(dir, m_normal) > 0)
-        normal = -m_normal;
-    else
-        normal = m_normal;
-
+    normal = m_normal;   // нормаль для детектора не важна
     return true;
 }
+
 
 void Detector::process(Ray& ray, const QPointF& point, const QVector2D& /*normal*/) const
 {
     ray.setActive(false);
-    m_hits.append(point); //сохраняем попадания
+    m_hits.append(point);
 }
+
 
 QString Detector::info() const
 {
@@ -68,7 +69,30 @@ QString Detector::info() const
         .arg(m_hits.size());
 }
 
-void Detector::clearHits()
+
+// Новые методы для диаграммы рассеяния
+QPointF Detector::centroid() const
 {
-    m_hits.clear();
+    if (m_hits.isEmpty())
+        return QPointF(0.0, 0.0);
+    double sumX = 0.0, sumY = 0.0;
+    for (const QPointF& p : m_hits) {
+        sumX += p.x();
+        sumY += p.y();
+    }
+    return QPointF(sumX / m_hits.size(), sumY / m_hits.size());
+}
+
+double Detector::rmsRadius() const
+{
+    if (m_hits.isEmpty())
+        return 0.0;
+    QPointF c = centroid();
+    double sumSq = 0.0;
+    for (const QPointF& p : m_hits) {
+        double dx = p.x() - c.x();
+        double dy = p.y() - c.y();
+        sumSq += dx*dx + dy*dy;
+    }
+    return std::sqrt(sumSq / m_hits.size());
 }

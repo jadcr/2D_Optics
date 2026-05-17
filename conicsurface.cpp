@@ -24,11 +24,22 @@ bool ConicSurface::intersect(const Ray& ray, double& t, QPointF& point, QVector2
     double dx = dir.x(), dy = dir.y();
     double ox = org.x(), oy = org.y();
     double vx = m_vertex.x(), vy = m_vertex.y();
+    double R = m_R;
+    double k = m_k;
 
-    const double R = m_R;
-    const double k = m_k;
+    // случай: R == 0 – плоскость (x = x_v)
+    if (fabs(R) < eps) {
+        if (fabs(dx) < eps) return false; // луч параллелен плоскости
+        double t_plane = (vx - ox) / dx;
+        if (t_plane <= eps) return false;
+        QPointF p = ray.pointAt(t_plane);
+        if (fabs(p.y() - vy) > m_diameter/2.0 + eps) return false;
+        point = p;
+        t = t_plane;
+        normal = QVector2D(1.0, 0.0); // нормаль вдоль оси X
+        return true;
+    }
 
-    // Коэффициенты квадратного уравнения A t^2 + B t + C = 0
     double A = (1.0 + k) * dx * dx + dy * dy;
     double B = 2.0 * ((1.0 + k) * (ox - vx) * dx + (oy - vy) * dy) - 2.0 * R * dx;
     double C = (1.0 + k) * (ox - vx) * (ox - vx) - 2.0 * R * (ox - vx) + (oy - vy) * (oy - vy);
@@ -38,43 +49,45 @@ bool ConicSurface::intersect(const Ray& ray, double& t, QPointF& point, QVector2
     QPointF bestPoint;
     QVector2D bestNormal;
 
-    // --- Обработка вырожденного случая A ≈ 0 (например, парабола и луч параллельно оси) ---
+    //Вырожденный случай A ≈ 0 (парабола и луч параллельно оси)
     if (fabs(A) < eps) {
-        if (fabs(B) < eps) return false; // нет пересечения (луч касается или параллелен)
+        if (fabs(B) < eps) return false;
         double t_lin = -C / B;
         if (t_lin > eps) {
             QPointF p = ray.pointAt(t_lin);
-            // Отсекаем левую ветвь (x < вершины)
-            if (p.x() >= vx - eps) {
-                // Проверка апертуры
-                if (fabs(p.y() - vy) <= m_diameter / 2.0 + eps) {
-                    t_intersect = t_lin;
-                    bestPoint = p;
-                    found = true;
-                }
+            // Выбор ветви в зависимости от знака R
+            bool xOk = false;
+            if (R > 0)      xOk = (p.x() >= vx - eps);
+            else if (R < 0) xOk = (p.x() <= vx + eps);
+            else            xOk = true;
+            if (xOk && fabs(p.y() - vy) <= m_diameter/2.0 + eps) {
+                t_intersect = t_lin;
+                bestPoint = p;
+                found = true;
             }
         }
-    } else {
-        // --- Обычный квадратный случай ---
-        double disc = B * B - 4.0 * A * C;
+    }
+    //Полный квадратный случай
+    else {
+        double disc = B*B - 4.0*A*C;
         if (disc < -eps) return false;
         if (disc < 0.0) disc = 0.0;
         double sqrtD = sqrt(disc);
-        double t1 = (-B - sqrtD) / (2.0 * A);
-        double t2 = (-B + sqrtD) / (2.0 * A);
-
-        // Проверяем оба корня
+        double t1 = (-B - sqrtD) / (2.0*A);
+        double t2 = (-B + sqrtD) / (2.0*A);
+        // Проверяем оба корня, берём наименьший положительный
         for (double t_cand : {t1, t2}) {
             if (t_cand > eps && t_cand < t_intersect) {
                 QPointF p = ray.pointAt(t_cand);
-                // Отсекаем левую ветвь (x < вершины)
-                if (p.x() >= vx - eps) {
-                    // Проверка апертуры
-                    if (fabs(p.y() - vy) <= m_diameter / 2.0 + eps) {
-                        t_intersect = t_cand;
-                        bestPoint = p;
-                        found = true;
-                    }
+                // Условие на нужную ветвь: правая для R>0, левая для R<0
+                bool xOk = false;
+                if (R > 0)      xOk = (p.x() >= vx - eps);
+                else if (R < 0) xOk = (p.x() <= vx + eps);
+                else            xOk = true;
+                if (xOk && fabs(p.y() - vy) <= m_diameter/2.0 + eps) {
+                    t_intersect = t_cand;
+                    bestPoint = p;
+                    found = true;
                 }
             }
         }
@@ -82,17 +95,14 @@ bool ConicSurface::intersect(const Ray& ray, double& t, QPointF& point, QVector2
 
     if (!found) return false;
 
-    // --- Заполнение выходных параметров ---
     t = t_intersect;
     point = bestPoint;
 
-    // Вычисление нормали через градиент неявной функции:
-    // F(x,y) = (1+k)(x-vx)^2 - 2R(x-vx) + (y-vy)^2
-    double Fx = 2.0 * (1.0 + k) * (point.x() - vx) - 2.0 * R;
-    double Fy = 2.0 * (point.y() - vy);
+    // Вычисление нормали (градиент)
+    double Fx = 2.0*(1.0 + k)*(point.x() - vx) - 2.0*R;
+    double Fy = 2.0*(point.y() - vy);
     QVector2D norm(Fx, Fy);
     norm.normalize();
-    // Дополнительная защита от нулевой нормали
     if (norm.length() < eps) norm = QVector2D(1.0, 0.0);
     normal = norm;
 
@@ -101,7 +111,7 @@ bool ConicSurface::intersect(const Ray& ray, double& t, QPointF& point, QVector2
 
 void ConicSurface::process(Ray& ray, const QPointF& point, const QVector2D& normal) const
 {
-    // Нормаль должна быть единичной. Если нет – нормализуем (на всякий случай).
+    // Нормаль должна быть единичной
     QVector2D n = normal;
     if (qAbs(n.length() - 1.0) > 1e-6)
         n.normalize();
