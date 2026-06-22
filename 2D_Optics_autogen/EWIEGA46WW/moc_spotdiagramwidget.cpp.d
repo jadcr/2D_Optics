@@ -1,7 +1,11 @@
 C:/Qt/2D/2D_Optics_autogen/EWIEGA46WW/moc_spotdiagramwidget.cpp: C:/Qt/2D/spotdiagramwidget.h \
   C:/Qt/2D/2D_Optics_autogen/moc_predefs.h \
+  C:/Qt/2D/detector.h \
+  C:/Qt/2D/opticalelement.h \
+  C:/Qt/2D/ray.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/QList \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/QPointF \
+  C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/QString \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/q17memory.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/q20functional.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/q20iterator.h \
@@ -129,6 +133,7 @@ C:/Qt/2D/2D_Optics_autogen/EWIEGA46WW/moc_spotdiagramwidget.cpp: C:/Qt/2D/spotdi
   C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/qversiontagging.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/qxptype_traits.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/qyieldcpu.h \
+  C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/QVector2D \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qaction.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qbitmap.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qbrush.h \
@@ -153,6 +158,7 @@ C:/Qt/2D/2D_Optics_autogen/EWIEGA46WW/moc_spotdiagramwidget.cpp: C:/Qt/2D/spotdi
   C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qtguiexports.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qtguiglobal.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qtransform.h \
+  C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qvectornd.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qwindowdefs.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qwindowdefs_win.h \
   C:/Qt/6.10.2/llvm-mingw_64/include/QtWidgets/QWidget \

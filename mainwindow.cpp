@@ -752,6 +752,7 @@ void MainWindow::generateAndTraceRays() {
         for (int i = 0; i < m_sourceParams.rayCount; ++i) {
             double y = yStart - i * spacing;
             Ray ray(QPointF(xStart, y), dir);
+            ray.setInitialY(y);
             m_rayTracer->addRay(ray);
         }
     } else { // точечный источник
@@ -767,6 +768,7 @@ void MainWindow::generateAndTraceRays() {
         }
     }
     m_rayTracer->traceAll(50);
+    updateSpotDiagram();
     m_hasLastRayParams = true;
 }
 
@@ -905,13 +907,22 @@ void MainWindow::on_actionSpotDiagram_triggered()
 void MainWindow::updateSpotDiagram()
 {
     if (!m_spotDialog) return;
-    QList<QPointF> allHits;
+    QList<Detector::HitData> allHits;
     for (OpticalElement* elem : m_scene->elements()) {
         if (Detector* det = dynamic_cast<Detector*>(elem))
-            allHits.append(det->hits());
+            allHits.append(det->hitData());
     }
-    if (m_spotWidget) m_spotWidget->setPoints(allHits);
-    if (m_histogramWidget) m_histogramWidget->setPoints(allHits);
+    if (m_spotWidget) {
+        m_spotWidget->setHitData(allHits);
+    }
+    if (m_histogramWidget) {
+        QList<QPointF> positions;
+        for (const auto& d : allHits) {
+            // Передаём позицию на детекторе как Y-координату (ось Y гистограммы)
+            positions.append(QPointF(0.0, d.pos.y()));
+        }
+        m_histogramWidget->setPoints(positions);
+    }
 }
 
 void MainWindow::registerGraphicsItem(OpticalElement* elem, QGraphicsItem* item)

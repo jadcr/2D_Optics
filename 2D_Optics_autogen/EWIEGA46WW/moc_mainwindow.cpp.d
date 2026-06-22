@@ -1,5 +1,6 @@
 C:/Qt/2D/2D_Optics_autogen/EWIEGA46WW/moc_mainwindow.cpp: C:/Qt/2D/mainwindow.h \
   C:/Qt/2D/2D_Optics_autogen/moc_predefs.h \
+  C:/Qt/2D/detector.h \
   C:/Qt/2D/histogramwidget.h \
   C:/Qt/2D/movableitem.h \
   C:/Qt/2D/opticalelement.h \

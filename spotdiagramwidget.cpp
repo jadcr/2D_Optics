@@ -16,9 +16,42 @@ SpotDiagramWidget::SpotDiagramWidget(QWidget *parent)
     setAutoFillBackground(true);
 }
 
-void SpotDiagramWidget::setPoints(const QList<QPointF>& points)
+void SpotDiagramWidget::setHitData(const QList<Detector::HitData>& data)
 {
-    m_points = points;
+    m_hitData = data;
+    // Преобразуем в точки для отрисовки:
+    // по оси X – позиция на детекторе (координата Y точки попадания, если детектор вертикален)
+    // по оси Y – зрачковая координата (initialY)
+    m_points.clear();
+    for (const auto& d : m_hitData) {
+        // Здесь предполагается, что детектор вертикальный (параллелен оси Y)
+        // Если детектор горизонтальный, нужно использовать d.pos.x()
+        double pos = d.pos.y();      // позиция вдоль детектора (мм)
+        double param = d.initialY;   // зрачковая координата (мм)
+        m_points.append(QPointF(pos, param));
+    }
+    // Автоматическое центрирование и масштабирование
+    if (!m_points.isEmpty()) {
+        double minX = m_points[0].x(), maxX = m_points[0].x();
+        double minY = m_points[0].y(), maxY = m_points[0].y();
+        for (const QPointF& p : m_points) {
+            minX = qMin(minX, p.x());
+            maxX = qMax(maxX, p.x());
+            minY = qMin(minY, p.y());
+            maxY = qMax(maxY, p.y());
+        }
+        double rangeX = maxX - minX;
+        double rangeY = maxY - minY;
+        double size = qMax(rangeX, rangeY);
+        if (size < 1e-6) size = 1.0;
+        // Устанавливаем масштаб и смещение с отступом 20%
+        double margin = 0.2;
+        double w = width() - 40;
+        double h = height() - 40;
+        m_scale = qMin(w / (size * (1 + 2*margin)), h / (size * (1 + 2*margin)));
+        m_offset = QPointF((minX + maxX)/2.0, (minY + maxY)/2.0);
+        if (m_scale < 1.0) m_scale = 1.0;
+    }
     update();
 }
 

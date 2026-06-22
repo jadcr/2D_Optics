@@ -7,6 +7,10 @@
 class Detector : public OpticalElement
 {
 public:
+    struct HitData {
+        QPointF pos;      // точка попадания на детектор
+        double initialY;  // начальная координата луча на входном зрачке
+    };
     Detector(const QPointF& p1, const QPointF& p2, const QString& name = "Detector");
 
     QPointF p1() const { return m_p1; }
@@ -18,7 +22,7 @@ public:
     QString info() const override;
 
     // Новые методы для диаграммы рассеяния
-    const QList<QPointF>& hits() const { return m_hits; }
+    const QList<HitData>& hitData() const { return m_hits; }
     void clearHits() { m_hits.clear(); }
     double rmsRadius() const;          // среднеквадратичный радиус
     QPointF centroid() const;          // центроид
@@ -28,7 +32,7 @@ private:
     QPointF m_p1, m_p2;
     QVector2D m_direction;
     QVector2D m_normal;
-    mutable QList<QPointF> m_hits;   // список точек попаданий
+    mutable QList<HitData> m_hits;   // список точек попаданий
 };
 
 #endif // DETECTOR_H

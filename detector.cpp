@@ -56,14 +56,16 @@ bool Detector::intersect(const Ray& ray, double& t, QPointF& point, QVector2D& n
 void Detector::process(Ray& ray, const QPointF& point, const QVector2D& /*normal*/) const
 {
     ray.setActive(false);
-    m_hits.append(point);
+    HitData data;
+    data.pos = point;
+    data.initialY = ray.initialY();   // сохраняем зрачковую координату
+    m_hits.append(data);
 }
-
 
 QString Detector::info() const
 {
     return QString("%1: (%2,%3)-(%4,%5) hits=%6")
-    .arg(name())
+        .arg(name())
         .arg(m_p1.x()).arg(m_p1.y())
         .arg(m_p2.x()).arg(m_p2.y())
         .arg(m_hits.size());
@@ -76,9 +78,9 @@ QPointF Detector::centroid() const
     if (m_hits.isEmpty())
         return QPointF(0.0, 0.0);
     double sumX = 0.0, sumY = 0.0;
-    for (const QPointF& p : m_hits) {
-        sumX += p.x();
-        sumY += p.y();
+    for (const HitData& d : m_hits) {
+        sumX += d.pos.x();
+        sumY += d.pos.y();
     }
     return QPointF(sumX / m_hits.size(), sumY / m_hits.size());
 }
@@ -89,9 +91,9 @@ double Detector::rmsRadius() const
         return 0.0;
     QPointF c = centroid();
     double sumSq = 0.0;
-    for (const QPointF& p : m_hits) {
-        double dx = p.x() - c.x();
-        double dy = p.y() - c.y();
+    for (const HitData& d : m_hits) {
+        double dx = d.pos.x() - c.x();
+        double dy = d.pos.y() - c.y();
         sumSq += dx*dx + dy*dy;
     }
     return std::sqrt(sumSq / m_hits.size());

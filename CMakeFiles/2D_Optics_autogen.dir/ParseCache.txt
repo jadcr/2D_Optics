@@ -4,6 +4,7 @@ C:/Qt/2D/raytracer.h
 C:/Qt/2D/mainwindow.h
  mmc:Q_OBJECT
  mdp:C:/Qt/2D/2D_Optics_autogen/moc_predefs.h
+ mdp:C:/Qt/2D/detector.h
  mdp:C:/Qt/2D/histogramwidget.h
  mdp:C:/Qt/2D/mainwindow.h
  mdp:C:/Qt/2D/movableitem.h
@@ -1927,9 +1928,13 @@ C:/Qt/2D/conicsurface.cpp
 C:/Qt/2D/spotdiagramwidget.h
  mmc:Q_OBJECT
  mdp:C:/Qt/2D/2D_Optics_autogen/moc_predefs.h
+ mdp:C:/Qt/2D/detector.h
+ mdp:C:/Qt/2D/opticalelement.h
+ mdp:C:/Qt/2D/ray.h
  mdp:C:/Qt/2D/spotdiagramwidget.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/QList
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/QPointF
+ mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/QString
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/q17memory.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/q20functional.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/q20iterator.h
@@ -2057,6 +2062,7 @@ C:/Qt/2D/spotdiagramwidget.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/qversiontagging.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/qxptype_traits.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtCore/qyieldcpu.h
+ mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/QVector2D
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qaction.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qbitmap.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qbrush.h
@@ -2081,6 +2087,7 @@ C:/Qt/2D/spotdiagramwidget.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qtguiexports.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qtguiglobal.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qtransform.h
+ mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qvectornd.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qwindowdefs.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtGui/qwindowdefs_win.h
  mdp:C:/Qt/6.10.2/llvm-mingw_64/include/QtWidgets/QWidget

@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QList>
 #include <QPointF>
+#include "detector.h"
 
 class SpotDiagramWidget : public QWidget
 {
@@ -11,7 +12,7 @@ class SpotDiagramWidget : public QWidget
 public:
     explicit SpotDiagramWidget(QWidget *parent = nullptr);
 
-    void setPoints(const QList<QPointF>& points);
+    void setHitData(const QList<Detector::HitData>& data);
     void setAiryRadius(double radius) { m_airyRadius = radius; }
     void clear();
 
@@ -23,6 +24,7 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private:
+    QList<Detector::HitData> m_hitData;
     QList<QPointF> m_points;
     double m_airyRadius;
     double m_scale;

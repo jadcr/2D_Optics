@@ -23,11 +23,15 @@ public:
     void addPoint(const QPointF& pt);
     void clearPath();
 
+    double initialY() const { return m_initialY; }
+    void setInitialY(double y) { m_initialY = y; }
+
 private:
     QPointF m_origin;
     QVector2D m_direction;
     bool m_active;
     QList<QPointF> m_path;
+    double m_initialY;
 };
 
 #endif // RAY_H
