@@ -66,6 +66,10 @@ add_executable(2D_Optics ${SOURCES} ${HEADERS}
     spotdiagramwidget.cpp
     histogramwidget.h
     histogramwidget.cpp
+    lens.h
+    lens.cpp
+    lensgraphicsitem.h
+    lensgraphicsitem.cpp
 
 
 ) # ${UIS} если есть

@@ -19,6 +19,10 @@
 	C:/Qt/2D/graphicsview.h \
 	C:/Qt/2D/histogramwidget.cpp \
 	C:/Qt/2D/histogramwidget.h \
+	C:/Qt/2D/lens.cpp \
+	C:/Qt/2D/lens.h \
+	C:/Qt/2D/lensgraphicsitem.cpp \
+	C:/Qt/2D/lensgraphicsitem.h \
 	C:/Qt/2D/main.cpp \
 	C:/Qt/2D/mainwindow.cpp \
 	C:/Qt/2D/mainwindow.h \

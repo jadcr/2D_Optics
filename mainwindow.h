@@ -56,6 +56,7 @@ private slots:
 
     void on_actionSpotDiagram_triggered();
     void updateSpotDiagram();
+    void on_actionAddLens_triggered();
 
 
 private:

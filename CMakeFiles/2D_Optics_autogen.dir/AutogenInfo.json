@@ -352,6 +352,13 @@
 			"EWIEGA46WW/moc_histogramwidget.cpp",
 			null
 		],
+		[ "C:/Qt/2D/lens.h", "Mu", "EWIEGA46WW/moc_lens.cpp", null ],
+		[
+			"C:/Qt/2D/lensgraphicsitem.h",
+			"Mu",
+			"EWIEGA46WW/moc_lensgraphicsitem.cpp",
+			null
+		],
 		[ "C:/Qt/2D/mainwindow.h", "Mu", "EWIEGA46WW/moc_mainwindow.cpp", null ],
 		[
 			"C:/Qt/2D/movableitem.h",
@@ -462,6 +469,8 @@
 		[ "C:/Qt/2D/detector.cpp", "Mu", null ],
 		[ "C:/Qt/2D/graphicsview.cpp", "Mu", null ],
 		[ "C:/Qt/2D/histogramwidget.cpp", "Mu", null ],
+		[ "C:/Qt/2D/lens.cpp", "Mu", null ],
+		[ "C:/Qt/2D/lensgraphicsitem.cpp", "Mu", null ],
 		[ "C:/Qt/2D/main.cpp", "Mu", null ],
 		[ "C:/Qt/2D/mainwindow.cpp", "Mu", null ],
 		[ "C:/Qt/2D/movableitem.cpp", "Mu", null ],

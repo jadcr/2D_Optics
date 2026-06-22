@@ -11,9 +11,13 @@
 #include "conicgraphicsitem.h"
 #include "spotdiagramwidget.h"
 
+#include "lens.h"
+#include "lensgraphicsitem.h"
+
 #include "histogramwidget.h"
 #include <QDialog>
 #include <QSplitter>
+#include <QLabel>
 
 #include <QGraphicsLineItem>
 #include <QVBoxLayout>
@@ -73,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
     QAction *actionAddConic = new QAction("Добавить коническую поверхность", this);
 
     QAction *actionSpotDiagram = new QAction("Диаграмма рассеяния", this);
+    QAction *actionAddLens = new QAction("Добавить линзу", this);
 
     // Меню
 
@@ -99,6 +104,7 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addAction(actionTraceRays);
     toolBar->addAction(actionClearRays);
     toolBar->addAction(actionRemoveElement);
+    toolBar->addAction(actionAddLens);
 
     QMenu *analysisMenu = menuBar()->addMenu("Анализ");
     analysisMenu->addAction(actionSpotDiagram);
@@ -144,11 +150,15 @@ MainWindow::MainWindow(QWidget *parent)
     diameterSpin->setRange(1, 1000);
     diameterSpin->setValue(50.0);
 
+    QLabel *focalLabel = new QLabel("Фокусное расстояние: --");
+    focalLabel->setObjectName("focalLabel");
+
     geomForm->addRow("X1:", x1Spin);
     geomForm->addRow("Y1:", y1Spin);
     geomForm->addRow("X2:", x2Spin);
     geomForm->addRow("Y2:", y2Spin);
     geomForm->addRow("Диаметр:", diameterSpin);
+    geomForm->addRow("Фокус:", focalLabel);
     tabWidget->addTab(geomTab, "Геометрия");
 
     // Вкладка "Материалы"
@@ -255,6 +265,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(actionRemoveElement, &QAction::triggered, this, &MainWindow::on_actionRemoveElement_triggered);
     connect(actionAddConic, &QAction::triggered, this, &MainWindow::on_actionAddConic_triggered);
     connect(actionSpotDiagram, &QAction::triggered, this, &MainWindow::on_actionSpotDiagram_triggered);
+    connect(actionAddLens, &QAction::triggered, this, &MainWindow::on_actionAddLens_triggered);
     QPushButton *applySourceBtn = findChild<QPushButton*>("applySourceButton");
     if (applySourceBtn) {
         connect(applySourceBtn, &QPushButton::clicked, this, &MainWindow::on_applySource_clicked);
@@ -361,6 +372,11 @@ void MainWindow::addElementToScene(OpticalElement* elem)
         m_graphicsScene->addItem(it);
         item = it;
     }
+    else if (Lens* lens = dynamic_cast<Lens*>(elem)) {
+        LensGraphicsItem* it = new LensGraphicsItem(lens, this);
+        m_graphicsScene->addItem(it);
+        item = it;
+    }
     if (item) {
         item->setFlag(QGraphicsItem::ItemIsMovable, false); // по умолчанию не двигается
         registerGraphicsItem(elem, item);
@@ -432,6 +448,29 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem* item)
         if (y2Spin) { y2Spin->setValue(conic->k()); y2Spin->setEnabled(true); }
         if (diameterSpin) { diameterSpin->setValue(conic->diameter()); diameterSpin->setEnabled(true); }
     }
+    else if (Lens* lens = dynamic_cast<Lens*>(elem)) {
+        if (x1Spin) { x1Spin->setValue(lens->center().x()); x1Spin->setEnabled(true); }
+        if (y1Spin) { y1Spin->setValue(lens->center().y()); y1Spin->setEnabled(true); }
+        if (x2Spin) { x2Spin->setValue(lens->radius1()); x2Spin->setEnabled(true); }
+        if (y2Spin) { y2Spin->setValue(lens->radius2()); y2Spin->setEnabled(true); }
+        if (diameterSpin) { diameterSpin->setValue(lens->diameter()); diameterSpin->setEnabled(true);}
+        double n = lens->nLens();
+        double R1 = lens->radius1();
+        double R2 = lens->radius2();
+        double f = 0;
+        if (qAbs(R1) > 1e-9 && qAbs(R2) > 1e-9 && qAbs(n - 1.0) > 1e-9) {
+            double invF = (n - 1.0) * (1.0 / R1 - 1.0 / R2);
+            if (qAbs(invF) > 1e-9)
+                f = 1.0 / invF;
+        }
+        QLabel* focalLabel = findChild<QLabel*>("focalLabel");
+        if (focalLabel) {
+            if (qAbs(f) > 1e-9)
+                focalLabel->setText(QString("Фокусное расстояние: %1").arg(f, 0, 'f', 2));
+            else
+                focalLabel->setText("Фокусное расстояние: ∞ (плоскость)");
+        }
+    }
 
 }
 
@@ -489,6 +528,32 @@ void MainWindow::on_applyButton_clicked()
             conic->setK(y2Spin->value());
         if (diameterSpin)
             conic->setDiameter(diameterSpin->value());
+    }
+    else if (Lens* lens = dynamic_cast<Lens*>(elem)) {
+        if (x1Spin && y1Spin)
+            lens->setCenter(QPointF(x1Spin->value(), y1Spin->value()));
+        if (x2Spin)
+            lens->setRadius1(x2Spin->value());
+        if (y2Spin)
+            lens->setRadius2(y2Spin->value());
+        if (diameterSpin)
+            lens->setDiameter(diameterSpin->value());
+        QLabel* focalLabel = findChild<QLabel*>("focalLabel");
+        if (focalLabel) {
+            double n = lens->nLens();
+            double R1 = lens->radius1();
+            double R2 = lens->radius2();
+            double f = 0;
+            if (qAbs(R1) > 1e-9 && qAbs(R2) > 1e-9 && qAbs(n - 1.0) > 1e-9) {
+                double invF = (n - 1.0) * (1.0 / R1 - 1.0 / R2);
+                if (qAbs(invF) > 1e-9)
+                    f = 1.0 / invF;
+            }
+            if (qAbs(f) > 1e-9)
+                focalLabel->setText(QString("Фокусное расстояние: %1").arg(f, 0, 'f', 2));
+            else
+                focalLabel->setText("Фокусное расстояние: ∞");
+        }
     }
 
     // Очистка графики
@@ -736,6 +801,16 @@ void MainWindow::elementMoved(OpticalElement* element)
                 diameterSpin->setEnabled(true);
             }
         }
+        else if (Lens* lens = dynamic_cast<Lens*>(element)) {
+            x1Spin->setValue(lens->center().x());
+            y1Spin->setValue(lens->center().y());
+            x2Spin->setValue(lens->radius1());
+            y2Spin->setValue(lens->radius2());
+            if (diameterSpin) {
+                diameterSpin->setValue(lens->diameter());
+                diameterSpin->setEnabled(true);
+            }
+        }
     }
 }
 
@@ -795,4 +870,15 @@ void MainWindow::setMovableForSelectedOnly()
         bool movable = (it.key() == m_currentElement);
         item->setFlag(QGraphicsItem::ItemIsMovable, movable);
     }
+}
+
+void MainWindow::on_actionAddLens_triggered()
+{
+    // Создаём собирающую линзу (двояковыпуклую) с параметрами по умолчанию
+    Lens *lens = new Lens(QPointF(0, 0), 10.0, 100.0, -100.0, 0.0, 0.0, 60.0, 1.5, "Линза");
+    m_scene->addElement(lens);
+    addElementToScene(lens);
+    regenerateRays();
+    updateElementsList();
+    //refreshLinearMode(); // если используется линейный режим
 }
