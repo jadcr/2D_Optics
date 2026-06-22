@@ -70,6 +70,8 @@ add_executable(2D_Optics ${SOURCES} ${HEADERS}
     lens.cpp
     lensgraphicsitem.h
     lensgraphicsitem.cpp
+    meniscus.h
+    meniscus.cpp
 
 
 ) # ${UIS} если есть

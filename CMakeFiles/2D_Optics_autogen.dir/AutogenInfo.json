@@ -360,6 +360,7 @@
 			null
 		],
 		[ "C:/Qt/2D/mainwindow.h", "Mu", "EWIEGA46WW/moc_mainwindow.cpp", null ],
+		[ "C:/Qt/2D/meniscus.h", "Mu", "EWIEGA46WW/moc_meniscus.cpp", null ],
 		[
 			"C:/Qt/2D/movableitem.h",
 			"Mu",
@@ -473,6 +474,7 @@
 		[ "C:/Qt/2D/lensgraphicsitem.cpp", "Mu", null ],
 		[ "C:/Qt/2D/main.cpp", "Mu", null ],
 		[ "C:/Qt/2D/mainwindow.cpp", "Mu", null ],
+		[ "C:/Qt/2D/meniscus.cpp", "Mu", null ],
 		[ "C:/Qt/2D/movableitem.cpp", "Mu", null ],
 		[ "C:/Qt/2D/opticalelement.cpp", "Mu", null ],
 		[ "C:/Qt/2D/ray.cpp", "Mu", null ],

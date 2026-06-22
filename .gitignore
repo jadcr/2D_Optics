@@ -169,3 +169,10 @@ CMakeLists.txt.user*
 /.qtc_clangd
 .qtcreator/CMakeLists.txt.user
 *.ninja
+.ninja_deps
+.ninja_log
+/.qtc_clangd
+build.ninja
+2D_Optics_autogen/deps
+2D_Optics_autogen/EWIEGA46WW/moc_mainwindow.cpp
+/CMakeFiles

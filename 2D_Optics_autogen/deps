@@ -26,6 +26,8 @@
 	C:/Qt/2D/main.cpp \
 	C:/Qt/2D/mainwindow.cpp \
 	C:/Qt/2D/mainwindow.h \
+	C:/Qt/2D/meniscus.cpp \
+	C:/Qt/2D/meniscus.h \
 	C:/Qt/2D/movableitem.cpp \
 	C:/Qt/2D/movableitem.h \
 	C:/Qt/2D/opticalelement.cpp \

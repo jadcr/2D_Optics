@@ -14,6 +14,8 @@
 #include "lens.h"
 #include "lensgraphicsitem.h"
 
+#include "meniscus.h"
+
 #include "histogramwidget.h"
 #include <QDialog>
 #include <QSplitter>
@@ -78,6 +80,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     QAction *actionSpotDiagram = new QAction("Диаграмма рассеяния", this);
     QAction *actionAddLens = new QAction("Добавить линзу", this);
+    QAction *actionAddMeniscus = new QAction("Добавить мениск", this);
+
+
 
     // Меню
 
@@ -105,6 +110,7 @@ MainWindow::MainWindow(QWidget *parent)
     toolBar->addAction(actionClearRays);
     toolBar->addAction(actionRemoveElement);
     toolBar->addAction(actionAddLens);
+     toolBar->addAction(actionAddMeniscus);
 
     QMenu *analysisMenu = menuBar()->addMenu("Анализ");
     analysisMenu->addAction(actionSpotDiagram);
@@ -266,6 +272,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(actionAddConic, &QAction::triggered, this, &MainWindow::on_actionAddConic_triggered);
     connect(actionSpotDiagram, &QAction::triggered, this, &MainWindow::on_actionSpotDiagram_triggered);
     connect(actionAddLens, &QAction::triggered, this, &MainWindow::on_actionAddLens_triggered);
+    connect(actionAddMeniscus, &QAction::triggered, this, &MainWindow::on_actionAddMeniscus_triggered);
     QPushButton *applySourceBtn = findChild<QPushButton*>("applySourceButton");
     if (applySourceBtn) {
         connect(applySourceBtn, &QPushButton::clicked, this, &MainWindow::on_applySource_clicked);
@@ -377,6 +384,11 @@ void MainWindow::addElementToScene(OpticalElement* elem)
         m_graphicsScene->addItem(it);
         item = it;
     }
+    else if (Meniscus* meniscus = dynamic_cast<Meniscus*>(elem)) {
+        LensGraphicsItem* it = new LensGraphicsItem(meniscus, this);
+        m_graphicsScene->addItem(it);
+        item = it;
+    }
     if (item) {
         item->setFlag(QGraphicsItem::ItemIsMovable, false); // по умолчанию не двигается
         registerGraphicsItem(elem, item);
@@ -471,6 +483,30 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem* item)
                 focalLabel->setText("Фокусное расстояние: ∞ (плоскость)");
         }
     }
+    else if (Meniscus* meniscus = dynamic_cast<Meniscus*>(elem)) {
+        if (x1Spin) { x1Spin->setValue(meniscus->center().x()); x1Spin->setEnabled(true); }
+        if (y1Spin) { y1Spin->setValue(meniscus->center().y()); y1Spin->setEnabled(true); }
+        if (x2Spin) { x2Spin->setValue(meniscus->radius1()); x2Spin->setEnabled(true); }
+        if (y2Spin) { y2Spin->setValue(meniscus->radius2()); y2Spin->setEnabled(true); }
+        if (diameterSpin) { diameterSpin->setValue(meniscus->diameter()); diameterSpin->setEnabled(true); }
+        // Вычисление и отображение фокусного расстояния (как для линзы)
+        double n = meniscus->nLens();
+        double R1 = meniscus->radius1();
+        double R2 = meniscus->radius2();
+        double f = 0;
+        if (qAbs(R1) > 1e-9 && qAbs(R2) > 1e-9 && qAbs(n - 1.0) > 1e-9) {
+            double invF = (n - 1.0) * (1.0 / R1 - 1.0 / R2);
+            if (qAbs(invF) > 1e-9)
+                f = 1.0 / invF;
+        }
+        QLabel* focalLabel = findChild<QLabel*>("focalLabel");
+        if (focalLabel) {
+            if (qAbs(f) > 1e-9)
+                focalLabel->setText(QString("Фокусное расстояние: %1 мм").arg(f, 0, 'f', 2));
+            else
+                focalLabel->setText("Фокусное расстояние: ∞");
+        }
+    }
 
 }
 
@@ -554,6 +590,16 @@ void MainWindow::on_applyButton_clicked()
             else
                 focalLabel->setText("Фокусное расстояние: ∞");
         }
+    }
+    else if (Meniscus* meniscus = dynamic_cast<Meniscus*>(elem)) {
+        if (x1Spin && y1Spin)
+            meniscus->setCenter(QPointF(x1Spin->value(), y1Spin->value()));
+        if (x2Spin)
+            meniscus->setRadius1(x2Spin->value());
+        if (y2Spin)
+            meniscus->setRadius2(y2Spin->value());
+        if (diameterSpin)
+            meniscus->setDiameter(diameterSpin->value());
     }
 
     // Очистка графики
@@ -811,6 +857,16 @@ void MainWindow::elementMoved(OpticalElement* element)
                 diameterSpin->setEnabled(true);
             }
         }
+        else if (Meniscus* meniscus = dynamic_cast<Meniscus*>(element)) {
+            x1Spin->setValue(meniscus->center().x());
+            y1Spin->setValue(meniscus->center().y());
+            x2Spin->setValue(meniscus->radius1());
+            y2Spin->setValue(meniscus->radius2());
+            if (diameterSpin) {
+                diameterSpin->setValue(meniscus->diameter());
+                diameterSpin->setEnabled(true);
+            }
+        }
     }
 }
 
@@ -878,6 +934,16 @@ void MainWindow::on_actionAddLens_triggered()
     Lens *lens = new Lens(QPointF(0, 0), 10.0, 100.0, -100.0, 0.0, 0.0, 60.0, 1.5, "Линза");
     m_scene->addElement(lens);
     addElementToScene(lens);
+    regenerateRays();
+    updateElementsList();
+    //refreshLinearMode(); // если используется линейный режим
+}
+
+void MainWindow::on_actionAddMeniscus_triggered()
+{
+    Meniscus *meniscus = new Meniscus(QPointF(0, 0), 12.0, 200.0, 210.0, 60.0, 1.5168, "Мениск");
+    m_scene->addElement(meniscus);
+    addElementToScene(meniscus);
     regenerateRays();
     updateElementsList();
     //refreshLinearMode(); // если используется линейный режим

@@ -57,6 +57,7 @@ private slots:
     void on_actionSpotDiagram_triggered();
     void updateSpotDiagram();
     void on_actionAddLens_triggered();
+    void on_actionAddMeniscus_triggered();
 
 
 private:
